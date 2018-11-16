@@ -5,14 +5,12 @@ const readline = require("readline").createInterface({
 });
 
 readline.question("Enter matrix length: ", length => {
-  length = +length || false;
+  length = +length;
 
-  if (length === false || length <= 0) {
+  if (!length || length < 0) {
     console.log("Please enter valid length!");
 
-    readline.close();
-
-    return;
+    return readline.close();
   }
 
   const array = new Array(length).fill(1);
@@ -21,28 +19,18 @@ readline.question("Enter matrix length: ", length => {
 
   const before = new Date();
 
-  const result = matrix1.map(row => {
-    const newRow = [];
-
-    row.forEach((_, colIndex) => {
-      const element = row.reduce(
-        (acc, curr, index) => acc + curr * matrix2[index][colIndex],
-        0
-      );
-      newRow.push(element);
-    });
-
-    return newRow;
-  });
+  const result = matrix1.map(row =>
+    row.map((_, colIndex) =>
+      row.reduce((acc, curr, index) => acc + curr * matrix2[index][colIndex], 0)
+    )
+  );
 
   const filename = "result.txt";
 
   fs.writeFileSync(filename, result.map(row => row.join(" ")).join("\r\n"));
 
-  const after = new Date();
-
   console.log(
-    `Finished in ${(after.getTime() - before.getTime()) /
+    `Finished in ${(new Date().getTime() - before.getTime()) /
       1000} s\r\nResult matrix saved in ${filename}`
   );
 
